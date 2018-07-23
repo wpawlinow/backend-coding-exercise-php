@@ -3,11 +3,16 @@
 namespace App\Commands;
 
 use App\Domains\Data\Commands\ProcessInputFileCommand;
+use App\Domains\Data\Entity\ConsoleInputData;
 use League\Tactician\CommandBus;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Throwable;
 
 class SearchCommand extends Command
 {
@@ -20,11 +25,15 @@ class SearchCommand extends Command
     /** @var CommandBus */
     private $commandBus;
 
+    /** @var ValidatorInterface */
+    private $validator;
 
-    public function __construct(CommandBus $commandBus)
+
+    public function __construct(CommandBus $commandBus, ValidatorInterface $validator)
     {
         parent::__construct($this->commandName);
         $this->commandBus = $commandBus;
+        $this->validator = $validator;
     }
 
 
@@ -63,6 +72,28 @@ class SearchCommand extends Command
         $output->writeln('Location: '.$input->getArgument('location'));
         $output->writeln('Covers: '.$input->getArgument('covers'));
 
-        $this->commandBus->handle(new ProcessInputFileCommand((string)$input->getArgument('filename')));
+        $consoleInputData = new ConsoleInputData();
+        $consoleInputData->filename = $input->getArgument('filename');
+        $consoleInputData->day = $input->getArgument('day');
+        $consoleInputData->time = $input->getArgument('time');
+        $consoleInputData->location = $input->getArgument('location');
+        $consoleInputData->covers = (int)$input->getArgument('covers');
+
+        try {
+
+            $errors = $this->validator->validate($consoleInputData);
+
+            if ($errors) {
+                $errorsString = (string) $errors;
+                $output->writeln('Invalid arguments');
+                throw new ValidatorException($errorsString);
+            }
+
+            $this->commandBus->handle(new ProcessInputFileCommand(__DIR__.'/../../'.$input->getArgument('filename')));
+
+        } catch(Throwable $ex) {
+            $output->writeln($ex->getMessage());
+            return;
+        }
     }
 }

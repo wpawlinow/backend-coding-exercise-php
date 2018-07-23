@@ -15,13 +15,13 @@ final class ProcessInputFileCommandHandler
                 throw new \RuntimeException('File does not exist');
             }
 
-            $file = fopen($command->getInputFile(), self::READ_MODE);
+            $file = fopen($command->getFileName(), self::READ_MODE);
             if (!$file) {
                 throw new \RuntimeException('Could not open input file');
             }
 
             while (($line = fgets($file)) !== false) {
-                sprintf('%s', $line);
+                printf('%s', $line);
             }
 
             fclose($file);
