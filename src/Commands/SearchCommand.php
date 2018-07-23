@@ -2,17 +2,18 @@
 
 namespace App\Commands;
 
+use App\Domains\Data\Commands\PostcodeValidateCommand;
 use App\Domains\Data\Commands\ProcessInputFileCommand;
 use App\Domains\Data\Entity\ConsoleInputData;
 use League\Tactician\CommandBus;
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Throwable;
+
 
 class SearchCommand extends Command
 {
@@ -28,12 +29,16 @@ class SearchCommand extends Command
     /** @var ValidatorInterface */
     private $validator;
 
+    /** @var string */
+    private $country;
 
-    public function __construct(CommandBus $commandBus, ValidatorInterface $validator)
+
+    public function __construct(CommandBus $commandBus, ValidatorInterface $validator, string $country = 'UK')
     {
         parent::__construct($this->commandName);
         $this->commandBus = $commandBus;
         $this->validator = $validator;
+        $this->country = $country;
     }
 
 
@@ -66,12 +71,6 @@ class SearchCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('File name: '.$input->getArgument('filename'));
-        $output->writeln('Day: '.$input->getArgument('day'));
-        $output->writeln('Time: '.$input->getArgument('time'));
-        $output->writeln('Location: '.$input->getArgument('location'));
-        $output->writeln('Covers: '.$input->getArgument('covers'));
-
         $consoleInputData = new ConsoleInputData();
         $consoleInputData->filename = $input->getArgument('filename');
         $consoleInputData->day = $input->getArgument('day');
@@ -81,18 +80,20 @@ class SearchCommand extends Command
 
         try {
 
-            $errors = $this->validator->validate($consoleInputData);
+            /** @var ConstraintViolationList */
+            $violations = $this->validator->validate($consoleInputData);
 
-            if ($errors) {
-                $errorsString = (string) $errors;
-                $output->writeln('Invalid arguments');
-                throw new ValidatorException($errorsString);
+            if ($violations instanceof ConstraintViolationList && $violations->count()) {
+                $violationsString = (string)$violations;
+                throw new \RuntimeException($violationsString);
             }
 
             $this->commandBus->handle(new ProcessInputFileCommand(__DIR__.'/../../'.$input->getArgument('filename')));
+            $output->writeln('Correct input. Processing...');
 
-        } catch(Throwable $ex) {
+        } catch (Throwable $ex) {
             $output->writeln($ex->getMessage());
+
             return;
         }
     }

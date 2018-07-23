@@ -1,5 +1,6 @@
 parameters:
     locale: 'en'
+    country: '%env(COUNTRY)%'
 
 services:
     _defaults:
@@ -9,10 +10,15 @@ services:
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
 
+
+
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
     App\Domains\Data\Commands\ProcessInputFileCommandHandler:
         tags:
-            - { name: tactician.handler, typehints: true }
+            - { name: tactician.handler, command: App\Domains\Data\Commands\ProcessInputFileCommand }
+
+
+

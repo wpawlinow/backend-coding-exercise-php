@@ -8,15 +8,18 @@ final class ProcessInputFileCommand
     /** @var string */
     private $fileName;
 
+
     public function __construct(string $fileName = '')
     {
         $this->fileName = $fileName;
     }
 
+
     public function fileExists(): bool
     {
         return file_exists($this->fileName);
     }
+
 
     public function getFileName(): string
     {
