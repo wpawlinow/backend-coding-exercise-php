@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+
+  app:
+    container_name: cp_app
+    build:
+      dockerfile: ./docker/app/Dockerfile
+      context: .
+    volumes:
+      - './:/app'
+    ports:
+      - "8000:80"
