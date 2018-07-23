@@ -3,7 +3,10 @@
 namespace App\Domains\Vendor\Entities;
 
 
+use App\Domains\MenuItem\Entities\MenuItem;
+use Doctrine\Common\Collections\ArrayCollection;
 use VasilDakov\Postcode\Postcode;
+
 
 class Vendor
 {
@@ -16,12 +19,13 @@ class Vendor
     /** @var integer */
     private $maxHeadcount;
 
+    /** @var array */
+    private $menuItems;
 
-    public function __construct(string $name, Postcode $postcode, int $maxHeadcount)
+
+    public function __construct()
     {
-        $this->name = $name;
-        $this->postcode = $postcode;
-        $this->maxHeadcount = $maxHeadcount;
+        $this->menuItems = new ArrayCollection();
     }
 
 
@@ -64,5 +68,17 @@ class Vendor
         $this->maxHeadcount = $maxHeadcount;
 
         return $this;
+    }
+
+
+    public function getMenuItems(): array
+    {
+        return $this->menuItems;
+    }
+
+
+    public function addMenuItem(MenuItem $menuItem): void
+    {
+        $this->menuItems->add($menuItem);
     }
 }

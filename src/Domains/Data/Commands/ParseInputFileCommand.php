@@ -3,7 +3,7 @@
 namespace App\Domains\Data\Commands;
 
 
-final class ProcessInputFileCommand
+final class ParseInputFileCommand
 {
     /** @var string */
     private $fileName;

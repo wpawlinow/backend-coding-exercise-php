@@ -30,10 +30,8 @@ RUN docker-php-ext-configure \
     	intl  \
 	&& pecl install \
 	    apcu \
-	    mongodb  \
 	&& docker-php-ext-enable \
-        apcu \
-        mongodb
+        apcu
 
 RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/ \

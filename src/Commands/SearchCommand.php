@@ -2,10 +2,11 @@
 
 namespace App\Commands;
 
+use App\Domains\Data\Commands\ParseInputFileCommand;
 use App\Domains\Data\Commands\PostcodeValidateCommand;
-use App\Domains\Data\Commands\ProcessInputFileCommand;
-use App\Domains\Data\Entity\ConsoleInputData;
+use App\Domains\Data\Entities\ConsoleInputData;
 use League\Tactician\CommandBus;
+use function session_destroy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,16 +30,15 @@ class SearchCommand extends Command
     /** @var ValidatorInterface */
     private $validator;
 
-    /** @var string */
-    private $country;
 
-
-    public function __construct(CommandBus $commandBus, ValidatorInterface $validator, string $country = 'UK')
+    public function __construct(CommandBus $commandBus, ValidatorInterface $validator)
     {
         parent::__construct($this->commandName);
         $this->commandBus = $commandBus;
         $this->validator = $validator;
-        $this->country = $country;
+
+        /* Demo purposes */
+        session_start();
     }
 
 
@@ -88,13 +88,16 @@ class SearchCommand extends Command
                 throw new \RuntimeException($violationsString);
             }
 
-            $this->commandBus->handle(new ProcessInputFileCommand(__DIR__.'/../../'.$input->getArgument('filename')));
+            $this->commandBus->handle(new ParseInputFileCommand(__DIR__.'/../../'.$input->getArgument('filename')));
             $output->writeln('Correct input. Processing...');
 
         } catch (Throwable $ex) {
             $output->writeln($ex->getMessage());
 
             return;
+        } finally {
+            /* Demo purposes */
+            session_destroy();
         }
     }
 }
