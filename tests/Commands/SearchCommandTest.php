@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Commands\SearchCommand;
+use App\Domains\Vendor\Services\SearchVendorsService;
 use League\Tactician\CommandBus;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +23,10 @@ class SearchCommandTest extends TestCase
         $mValidator = Mockery::mock(ValidatorInterface::class);
         $mValidator->expects('validate')->andReturn(null);
 
-        $searchCommand = new SearchCommand($mCommandBus, $mValidator);
+        $mSearchService = Mockery::mock(SearchVendorsService::class);
+        $mSearchService->expects('search')->andReturn([]);
+
+        $searchCommand = new SearchCommand($mCommandBus, $mValidator, $mSearchService);
         $commandTester = new CommandTester($searchCommand);
         $commandTester->execute([
             'filename' => 'resources/input.ebnf',
@@ -50,12 +54,15 @@ class SearchCommandTest extends TestCase
             '',
             'G5]]] 1SB'
         );
+
         $validator = $this->createMock(ValidatorInterface::class);
         $validator->method('validate')
                   ->will($this->returnValue(new ConstraintViolationList([$error])));
 
+        $mSearchService = Mockery::mock(SearchVendorsService::class);
+        $mSearchService->expects('search')->andReturn([]);
 
-        $searchCommand = new SearchCommand($mCommandBus, $validator, 'UK');
+        $searchCommand = new SearchCommand($mCommandBus, $validator, $mSearchService);
         $commandTester = new CommandTester($searchCommand);
         $commandTester->execute([
             'filename' => '--resources/input.ebnf',

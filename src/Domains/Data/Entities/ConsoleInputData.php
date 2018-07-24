@@ -40,7 +40,12 @@ class ConsoleInputData
     public $covers;
 
 
-    public function setFilename($filename): ConsoleInputData
+    public function getFilename(): string
+    {
+        return $this->filename;
+    }
+
+    public function setFilename(string $filename): ConsoleInputData
     {
         $this->filename = $filename;
 
@@ -48,23 +53,31 @@ class ConsoleInputData
     }
 
 
-    public function setDay($day): ConsoleInputData
+    public function setDay(string $day): ConsoleInputData
     {
+        /**
+         * Here should DateTime::createFromFormat() and rest
+         * of the system should be a bit refactored
+         */
         $this->day = $day;
 
         return $this;
     }
 
 
-    public function setTime($time): ConsoleInputData
+    public function setTime(string $time): ConsoleInputData
     {
+        /**
+         * Here should DateTime::createFromFormat() and rest
+         * of the system should be a bit refactored
+         */
         $this->time = $time;
 
         return $this;
     }
 
 
-    public function setLocation($location): ConsoleInputData
+    public function setLocation(string $location): ConsoleInputData
     {
         $this->location = $location;
 
@@ -72,11 +85,31 @@ class ConsoleInputData
     }
 
 
-    public function setCovers($covers): ConsoleInputData
+    public function setCovers(int $covers): ConsoleInputData
     {
         $this->covers = $covers;
 
         return $this;
     }
 
+    public function getDay(): string
+    {
+        return $this->day;
+    }
+
+    public function getTime(): string
+    {
+        return $this->time;
+    }
+
+    public function getLocation(): string
+    {
+        return $this->location;
+    }
+
+
+    public function getCovers(): int
+    {
+        return $this->covers;
+    }
 }

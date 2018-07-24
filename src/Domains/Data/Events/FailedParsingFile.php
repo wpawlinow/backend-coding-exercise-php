@@ -6,7 +6,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 final class FailedParsingFile extends Event
 {
-    const NAME = 'parsing_file.failed';
+    public const NAME = 'parsing_file.failed';
 
     /** @var string */
     private $line;

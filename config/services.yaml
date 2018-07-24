@@ -24,7 +24,7 @@ services:
         tags:
             - { name: tactician.handler, command: App\Domains\Data\Commands\ParseInputFileCommand }
         arguments:
-#            $repository: '@App\Domains\Vendor\Repositories\SessionVendorRepository'
+            $repository: '@App\Domains\Vendor\Repositories\SQLiteVendorRepository'
 
     ### Events
     App\Domains\Data\Events\FailedParsingFileSubscriber:

@@ -19,7 +19,7 @@ class FailedParsingFileSubscriber implements EventSubscriberInterface
 
     public function onParsingFileFailed(FailedParsingFile $event): void
     {
-        // ...
+        // ... Here can be anything to handle this fail
         throw new InvalidArgumentException("Parsing line '{$event->getLine()}' failed");
     }
 }

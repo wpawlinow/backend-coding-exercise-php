@@ -4,11 +4,9 @@ namespace App\Domains\Vendor\Services;
 
 
 use App\Domains\Data\Events\FailedParsingFile;
-use App\Domains\Data\Events\FailedParsingFileSubscriber;
 use App\Domains\MenuItem\Entities\MenuItem;
 use App\Domains\Vendor\Entities\Vendor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use VasilDakov\Postcode\Postcode;
 
 
 class ParseVendorsService
@@ -33,7 +31,7 @@ class ParseVendorsService
                 [$name, $postcode, $maxHeadcounts] = explode(';', $line);
 
                 /**
-                 * This regexp ensure its vendor line
+                 * Here should be regexp to ensure whether its vendor line
                  * Here I dispatch event to handle somewhere else.
                  * It depends on business logic. If we got 5 GB EBNF file to parse,
                  * we must decide if we parse with skipping invalid lines or we continue.
@@ -45,13 +43,13 @@ class ParseVendorsService
                 if ((int)$maxHeadcounts < 1) {
                     $this->eventDispatcher->dispatch(
                         FailedParsingFile::NAME,
-                        new FailedParsingFile($line
-                        ));
+                        new FailedParsingFile($line)
+                    );
                 }
 
                 $vendor = (new Vendor())
                     ->setName($name)
-                    ->setPostcode(new Postcode($postcode))
+                    ->setPostcode($postcode)
                     ->setMaxHeadcount((int)$maxHeadcounts);
 
                 while (PHP_EOL !== ($line = fgets($file))) {
@@ -69,7 +67,8 @@ class ParseVendorsService
                     $menuItem = (new MenuItem())
                         ->setName($name)
                         ->setAllergies($allergies ?: [])
-                        ->setNoticePeriod((int)$noticePeriod);
+                        ->setNoticePeriod((int)$noticePeriod)
+                        ->setVendor($vendor);
 
                     $vendor->addMenuItem($menuItem);
                 }

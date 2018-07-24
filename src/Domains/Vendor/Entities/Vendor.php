@@ -5,6 +5,7 @@ namespace App\Domains\Vendor\Entities;
 
 use App\Domains\MenuItem\Entities\MenuItem;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\OneToMany;
 use VasilDakov\Postcode\Postcode;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,7 +28,7 @@ class Vendor
     private $name;
 
     /**
-     * @ORM\Column(type="object")
+     * @ORM\Column(type="string")
      * @var Postcode
      */
     private $postcode;
@@ -40,6 +41,7 @@ class Vendor
 
     /**
      * @ORM\Column(type="array")
+     * @OneToMany(targetEntity="App\Domains\MenuItem\Entities\MenuItem", mappedBy="vendor", cascade={"persist"})
      * @var array
      */
     private $menuItems;
@@ -59,7 +61,7 @@ class Vendor
 
     public function getPostcode(): Postcode
     {
-        return $this->postcode;
+        return new Postcode($this->postcode);
     }
 
 
@@ -77,9 +79,9 @@ class Vendor
     }
 
 
-    public function setPostcode(Postcode $postcode): Vendor
+    public function setPostcode(string $postcode): Vendor
     {
-        $this->postcode = $postcode;
+        $this->postcode = (new Postcode($postcode))->normalise();
 
         return $this;
     }

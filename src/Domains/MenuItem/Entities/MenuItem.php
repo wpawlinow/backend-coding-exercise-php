@@ -2,7 +2,9 @@
 
 namespace App\Domains\MenuItem\Entities;
 
+use App\Domains\Vendor\Entities\Vendor;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domains\MenuItem\Repositories\SQLiteMenuItemRepository")
@@ -33,6 +35,11 @@ class MenuItem
      * @var integer
      */
     private $noticePeriod;
+
+    /**
+     * @ManyToOne(targetEntity="App\Domains\Vendor\Entities\Vendor", inversedBy="menuItems")
+     */
+    private $vendor;
 
 
     public function getName(): string
@@ -72,6 +79,13 @@ class MenuItem
     public function setNoticePeriod(int $noticePeriod): MenuItem
     {
         $this->noticePeriod = $noticePeriod;
+
+        return $this;
+    }
+
+    public function setVendor(Vendor $vendor): MenuItem
+    {
+        $this->vendor = $vendor;
 
         return $this;
     }

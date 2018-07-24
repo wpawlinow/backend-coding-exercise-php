@@ -5,9 +5,9 @@ namespace App\Commands;
 use App\Domains\Data\Commands\ParseInputFileCommand;
 use App\Domains\Data\Commands\PostcodeValidateCommand;
 use App\Domains\Data\Entities\ConsoleInputData;
+use App\Domains\Vendor\Services\SearchVendorsService;
 use League\Tactician\CommandBus;
 use RuntimeException;
-use function session_destroy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,12 +31,20 @@ class SearchCommand extends Command
     /** @var ValidatorInterface */
     private $validator;
 
+    /** @var SearchVendorsService */
+    private $searchVendorsService;
 
-    public function __construct(CommandBus $commandBus, ValidatorInterface $validator)
-    {
+
+    public function __construct(
+        CommandBus $commandBus,
+        ValidatorInterface $validator,
+        SearchVendorsService $searchVendorsService
+    ) {
         parent::__construct($this->commandName);
+
         $this->commandBus = $commandBus;
         $this->validator = $validator;
+        $this->searchVendorsService = $searchVendorsService;
     }
 
 
@@ -69,28 +77,31 @@ class SearchCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $consoleInputData = (new ConsoleInputData())
-            ->setFilename($input->getArgument('filename'))
-            ->setDay($input->getArgument('day'))
-            ->setTime($input->getArgument('time'))
-            ->setLocation($input->getArgument('location'))
-            ->setCovers((int)$input->getArgument('covers'));
-
         try {
+
+            $consoleInputData = (new ConsoleInputData())
+                ->setFilename($input->getArgument('filename'))
+                ->setDay($input->getArgument('day'))
+                ->setTime($input->getArgument('time'))
+                ->setLocation($input->getArgument('location'))
+                ->setCovers((int)$input->getArgument('covers'));
 
             /** @var ConstraintViolationList */
             $violations = $this->validator->validate($consoleInputData);
 
+            /** It seems here I can't use 0 !== \count($violations) */
             if ($violations instanceof ConstraintViolationList && $violations->count()) {
-                $violationsString = (string)$violations;
-                throw new RuntimeException($violationsString);
+                throw new RuntimeException((string)$violations);
             }
 
-            $this->commandBus->handle(new ParseInputFileCommand(__DIR__."/../../{$input->getArgument('filename')}"));
+            $this->commandBus->handle(new ParseInputFileCommand(__DIR__."/../../{$consoleInputData->getFilename()}"));
 
-            $output->writeln('Correct input. Processing...');
+            $results = $this->searchVendorsService->search($consoleInputData);
 
-
+            /* Simple result presentation */
+            foreach ($results as $result) {
+                sprintf('%s', $result);
+            }
 
         } catch (Throwable $ex) {
             $output->writeln($ex->getMessage());

@@ -4,6 +4,7 @@ namespace App\Domains\Vendor\Repositories;
 
 use App\Domains\Vendor\Entities\Vendor;
 use App\Domains\Vendor\Interfaces\VendorRepositoryInterface;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SQLiteVendorRepository implements VendorRepositoryInterface
@@ -19,12 +20,6 @@ class SQLiteVendorRepository implements VendorRepositoryInterface
     }
 
 
-    private function getEntityClass(): string
-    {
-        return Vendor::class;
-    }
-
-
     public function store(Vendor $vendor): void
     {
         $this->em->persist($vendor);
@@ -32,8 +27,17 @@ class SQLiteVendorRepository implements VendorRepositoryInterface
     }
 
 
-    public function findBy(array $params): array
+    public function findBy(DateTime $day, DateTime $time, string $location, int $covers): array
     {
-        $this->em->getRepository($this->getEntityClass())->findBy($params);
+        /**
+         * Here I would build plain SQL query.
+         * it's the best, and fastest way to query data from database.
+         */
+
+        /* $qb = $this->em->createNativeQuery(''); */
+
+        /* Hydrate results to array */
+
+        return [];
     }
 }
