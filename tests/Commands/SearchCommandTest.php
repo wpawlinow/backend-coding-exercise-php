@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SearchCommandTest extends TestCase
 {
+
     public function testExecute(): void
     {
         $mCommandBus = Mockery::mock(CommandBus::class);
@@ -32,7 +33,7 @@ class SearchCommandTest extends TestCase
         ]);
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('Correct input. Processing...', $output);
+        $this->assertNotContains('Please provide', $output);
     }
 
 

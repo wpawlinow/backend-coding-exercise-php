@@ -30,8 +30,7 @@ class ConsoleInputData
     public $time;
 
     /**
-     * @Assert\Regex("/([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})
-    |(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z])))) [0-9][A-Za-z]{2})/")
+     * @Assert\Regex("/([Gg][Ii][Rr]0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})/")
      */
     public $location;
 
@@ -39,5 +38,45 @@ class ConsoleInputData
      * @Assert\Type("integer")
      */
     public $covers;
+
+
+    public function setFilename($filename): ConsoleInputData
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+
+    public function setDay($day): ConsoleInputData
+    {
+        $this->day = $day;
+
+        return $this;
+    }
+
+
+    public function setTime($time): ConsoleInputData
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+
+    public function setLocation($location): ConsoleInputData
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+
+    public function setCovers($covers): ConsoleInputData
+    {
+        $this->covers = $covers;
+
+        return $this;
+    }
 
 }

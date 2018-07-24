@@ -46,7 +46,7 @@ class ParseVendorsService
                     $this->eventDispatcher->dispatch(
                         FailedParsingFile::NAME,
                         new FailedParsingFile($line
-                    ));
+                        ));
                 }
 
                 $vendor = (new Vendor())

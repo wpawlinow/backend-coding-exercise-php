@@ -6,6 +6,7 @@ use App\Domains\Data\Commands\ParseInputFileCommand;
 use App\Domains\Data\Commands\PostcodeValidateCommand;
 use App\Domains\Data\Entities\ConsoleInputData;
 use League\Tactician\CommandBus;
+use RuntimeException;
 use function session_destroy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,9 +37,6 @@ class SearchCommand extends Command
         parent::__construct($this->commandName);
         $this->commandBus = $commandBus;
         $this->validator = $validator;
-
-        /* Demo purposes */
-        session_start();
     }
 
 
@@ -71,12 +69,12 @@ class SearchCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $consoleInputData = new ConsoleInputData();
-        $consoleInputData->filename = $input->getArgument('filename');
-        $consoleInputData->day = $input->getArgument('day');
-        $consoleInputData->time = $input->getArgument('time');
-        $consoleInputData->location = $input->getArgument('location');
-        $consoleInputData->covers = (int)$input->getArgument('covers');
+        $consoleInputData = (new ConsoleInputData())
+            ->setFilename($input->getArgument('filename'))
+            ->setDay($input->getArgument('day'))
+            ->setTime($input->getArgument('time'))
+            ->setLocation($input->getArgument('location'))
+            ->setCovers((int)$input->getArgument('covers'));
 
         try {
 
@@ -85,10 +83,11 @@ class SearchCommand extends Command
 
             if ($violations instanceof ConstraintViolationList && $violations->count()) {
                 $violationsString = (string)$violations;
-                throw new \RuntimeException($violationsString);
+                throw new RuntimeException($violationsString);
             }
 
-            $this->commandBus->handle(new ParseInputFileCommand(__DIR__.'/../../'.$input->getArgument('filename')));
+            $this->commandBus->handle(new ParseInputFileCommand(__DIR__."/../../{$input->getArgument('filename')}"));
+
             $output->writeln('Correct input. Processing...');
 
 
@@ -97,9 +96,6 @@ class SearchCommand extends Command
             $output->writeln($ex->getMessage());
 
             return;
-        } finally {
-            /* Demo purposes */
-            session_destroy();
         }
     }
 }

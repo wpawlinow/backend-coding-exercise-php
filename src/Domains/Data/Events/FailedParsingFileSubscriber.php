@@ -9,12 +9,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class FailedParsingFileSubscriber implements EventSubscriberInterface
 {
 
-     public static function getSubscribedEvents(): array
-     {
+    public static function getSubscribedEvents(): array
+    {
         return [
             FailedParsingFile::NAME => ['onParsingFileFailed', 0],
         ];
-     }
+    }
+
 
     public function onParsingFileFailed(FailedParsingFile $event): void
     {

@@ -6,20 +6,42 @@ namespace App\Domains\Vendor\Entities;
 use App\Domains\MenuItem\Entities\MenuItem;
 use Doctrine\Common\Collections\ArrayCollection;
 use VasilDakov\Postcode\Postcode;
+use Doctrine\ORM\Mapping as ORM;
 
-
+/**
+ * @ORM\Entity(repositoryClass="App\Domains\Vendor\Repository\SQLiteVendorRepository")
+ */
 class Vendor
 {
-    /** @var string */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
     private $name;
 
-    /** @var Postcode */
+    /**
+     * @ORM\Column(type="object")
+     * @var Postcode
+     */
     private $postcode;
 
-    /** @var integer */
+    /**
+     * @ORM\Column(type="integer")
+     * @var integer
+     */
     private $maxHeadcount;
 
-    /** @var array */
+    /**
+     * @ORM\Column(type="array")
+     * @var array
+     */
     private $menuItems;
 
 

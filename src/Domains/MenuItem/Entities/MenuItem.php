@@ -2,15 +2,36 @@
 
 namespace App\Domains\MenuItem\Entities;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Domains\MenuItem\Repositories\SQLiteMenuItemRepository")
+ */
 class MenuItem
 {
-    /** @var string */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string")
+     * @var string
+     */
     private $name;
 
-    /** @var array */
+    /**
+     * @ORM\Column(type="array")
+     * @var array
+     */
     private $allergies;
 
-    /** @var integer */
+    /**
+     * @ORM\Column(type="integer")
+     * @var integer
+     */
     private $noticePeriod;
 
 

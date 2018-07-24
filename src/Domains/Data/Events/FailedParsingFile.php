@@ -11,10 +11,12 @@ final class FailedParsingFile extends Event
     /** @var string */
     private $line;
 
+
     public function __construct(string $line)
     {
         $this->line = $line;
     }
+
 
     public function getLine(): string
     {

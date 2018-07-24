@@ -14,13 +14,17 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
+    App\Infrastructure\Database\:
+        resource: '../src/Infrastructure/Database/*'
+        exclude: '../src/Infrastructure/Database/{Migrations}'
+
 
     ### CommandBus
     App\Domains\Data\Commands\ParseInputFileCommandHandler:
         tags:
             - { name: tactician.handler, command: App\Domains\Data\Commands\ParseInputFileCommand }
         arguments:
-            $repository: '@App\Domains\Vendor\Repository\SessionVendorRepository'
+#            $repository: '@App\Domains\Vendor\Repositories\SessionVendorRepository'
 
     ### Events
     App\Domains\Data\Events\FailedParsingFileSubscriber:
