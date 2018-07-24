@@ -2,6 +2,7 @@
 Author: **Wojciech Pawlinów**  
 Stack: **Dockerized Symfony 4 CLI application + SQLite**
 
+0. ` cp .env.dist .env && phpunit.xml.dist phpunit.xml`
 1. `make build`
 2. `make run-valid`
 

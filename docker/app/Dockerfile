@@ -48,6 +48,7 @@ COPY ./docker/app/docker-php-entrypoint.sh /usr/local/bin/docker-php-entrypoint
 RUN rm -rf /etc/nginx/sites-enabled/*
 COPY ./docker/app/app-vhost.conf /etc/nginx/sites-enabled
 RUN chmod +x /usr/local/bin/docker-php-entrypoint
+RUN sh /usr/local/bin/docker-php-entrypoint
 
 RUN apt-get autoremove \
     && apt-get autoclean \

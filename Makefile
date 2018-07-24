@@ -1,10 +1,12 @@
 build:
-	docker-compose up -d --build
+	docker-compose up -d --force-recreate --build
 	docker-compose exec -T app bin/console doctrine:database:create
 	docker-compose exec -T app bin/console doctrine:schema:create
-	docker-compose exec -T app bin/console doctrine:schema:update
+	docker-compose exec -T app bin/console doctrine:schema:update --force
 
 run-custom:
+	docker-compose exec -T app bin/console doctrine:schema:drop --force
+	docker-compose exec -T app bin/console doctrine:schema:create
 	docker-compose exec -T app bin/console app:search $(filename) $(day) $(time) $(location) $(covers)
 
 run-valid:
