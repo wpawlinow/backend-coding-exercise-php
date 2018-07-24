@@ -32,27 +32,22 @@ final class ParseInputFileCommandHandler
     public function handle(ParseInputFileCommand $command): void
     {
         try {
-            if (!$command->fileExists()) {
+
+            if (false === $command->fileExists()) {
                 throw new RuntimeException('File does not exist');
             }
 
             $file = fopen($command->getFileName(), self::READ_MODE);
+
             if (!$file) {
                 throw new RuntimeException('Could not open input file');
             }
 
-            $vendors = $this->parseVendorsService->parseFromFile($file);
+            $vendors = $this->parseVendorsService->retrieveFromFile($file);
 
             fclose($file);
 
             foreach ($vendors as $vendor) {
-
-                printf('%s', $vendor->getName());
-
-                foreach ($vendor->getMenuItems() as $menuItem) {
-                    printf('%s', $menuItem->getName());
-                }
-
                 $this->repository->store($vendor);
             }
 

@@ -20,6 +20,6 @@ class SessionVendorRepository implements VendorRepositoryInterface
 
     public function store(Vendor $vendor): void
     {
-        printf('store');
+        printf('');
     }
 }

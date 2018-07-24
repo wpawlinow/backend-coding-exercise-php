@@ -9,15 +9,21 @@ services:
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
 
+    ### Entire scope auto wiring
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
+
+    ### CommandBus
     App\Domains\Data\Commands\ParseInputFileCommandHandler:
         tags:
             - { name: tactician.handler, command: App\Domains\Data\Commands\ParseInputFileCommand }
         arguments:
             $repository: '@App\Domains\Vendor\Repository\SessionVendorRepository'
 
-
+    ### Events
+    App\Domains\Data\Events\FailedParsingFileSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
 

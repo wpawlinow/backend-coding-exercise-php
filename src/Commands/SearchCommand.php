@@ -91,6 +91,8 @@ class SearchCommand extends Command
             $this->commandBus->handle(new ParseInputFileCommand(__DIR__.'/../../'.$input->getArgument('filename')));
             $output->writeln('Correct input. Processing...');
 
+
+
         } catch (Throwable $ex) {
             $output->writeln($ex->getMessage());
 
