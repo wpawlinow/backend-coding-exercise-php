@@ -41,9 +41,13 @@ class SQLiteVendorRepository implements VendorRepositoryInterface
          */
 
         $qb = $this->em->createQuery(
-            'SELECT mi FROM '.MenuItem::class.' mi'
-        );
-
+            'SELECT mi FROM '.MenuItem::class.' mi
+            JOIN '.Vendor::class.' v
+            WHERE
+               mi.vendor = v.id
+            AND
+               v.postcode = \''.$location.'\'
+            ');
 
         return $qb->getResult(Query::HYDRATE_OBJECT);
     }

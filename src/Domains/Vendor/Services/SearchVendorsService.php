@@ -5,6 +5,7 @@ namespace App\Domains\Vendor\Services;
 use App\Domains\Data\Entities\ConsoleInputData;
 use App\Domains\Vendor\Interfaces\VendorRepositoryInterface;
 use DateTime;
+use VasilDakov\Postcode\Postcode;
 
 class SearchVendorsService
 {
@@ -29,7 +30,7 @@ class SearchVendorsService
         return $this->repository->findBy(
             $day,
             $time,
-            $inputData->getLocation(),
+            (new Postcode($inputData->getLocation()))->normalise(),
             $inputData->getCovers()
         );
     }
