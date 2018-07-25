@@ -11,11 +11,9 @@ build:
 	docker-compose exec -T php_app bin/console doctrine:schema:create
 	docker-compose exec -T php_app bin/console doctrine:schema:update --force
 1. `docker-compose build && docker-compose up -d`
-2. `docker exec -it php_app bash `
-3. `composer install`
-4. `docker exec -it php_app bin/console doctrine:database:create`
-5. `docker exec -it php_app bin/console doctrine:schema:create`  
-`docker exec -it php_app bin/console doctrine:schema:update --force`
+2. `docker exec -it php_app bash` (attach container)
+3. `composer install` (Ctrl+D to escape container)
+4. `make build`
 
 Run  
 `make run-valid`
