@@ -3,8 +3,22 @@ Author: **Wojciech Pawlinów**
 Stack: **Dockerized Symfony 4 CLI application + SQLite**
 
 0. ` cp .env.dist .env && phpunit.xml.dist phpunit.xml`
-1. `make build`
-2. `make run-valid`
+
+build:
+	docker-compose build
+	docker-compose up -d --force-recreate
+	docker-compose exec -T php_app bin/console doctrine:database:create
+	docker-compose exec -T php_app bin/console doctrine:schema:create
+	docker-compose exec -T php_app bin/console doctrine:schema:update --force
+1. `docker-compose build && docker-compose up -d`
+2. `docker exec -it php_app bash `
+3. `composer install`
+4. `docker exec -it php_app bin/console doctrine:database:create`
+5. `docker exec -it php_app bin/console doctrine:schema:create`  
+`docker exec -it php_app bin/console doctrine:schema:update --force`
+
+Run  
+`make run-valid`
 
 ### Description
 - App is in Docker with Nginx and PHP 7.2 

@@ -1,23 +1,22 @@
 build:
-	docker-compose up -d --force-recreate --build
-	docker-compose exec -T app bin/console doctrine:database:create
-	docker-compose exec -T app bin/console doctrine:schema:create
-	docker-compose exec -T app bin/console doctrine:schema:update --force
+	docker exec -it php_app bin/console doctrine:database:create
+	docker exec -it php_app bin/console doctrine:schema:create
+	docker exec -it php_app bin/console doctrine:schema:update --force
 
 run-custom:
-	docker-compose exec -T app bin/console doctrine:schema:drop --force
-	docker-compose exec -T app bin/console doctrine:schema:create
-	docker-compose exec -T app bin/console app:search $(filename) $(day) $(time) $(location) $(covers)
+	docker exec -it php_app bin/console doctrine:schema:drop --force
+	docker exec -it php_app bin/console doctrine:schema:create
+	docker exec -it php_app bin/console app:search $(filename) $(day) $(time) $(location) $(covers)
 
 run-valid:
-	docker-compose exec -T app bin/console doctrine:schema:drop --force
-	docker-compose exec -T app bin/console doctrine:schema:create
-	docker-compose exec -T app bin/console app:search 'resources/input.ebnf' '11/11/18' '11:00' 'NW42QA' 20
+	docker exec -it php_app bin/console doctrine:schema:drop --force
+	docker exec -it php_app bin/console doctrine:schema:create
+	docker exec -it php_app bin/console app:search 'resources/input.ebnf' '11/11/18' '11:00' 'NW42QA' 20
 
 run-invalid:
-	docker-compose exec -T app bin/console doctrine:schema:drop --force
-	docker-compose exec -T app bin/console doctrine:schema:create
-	docker-compose exec -T app bin/console app:search 'resources/input.ebnf' '2307/2018' '16:310' 'G58]1SB' 15
+	docker exec -it php_app bin/console doctrine:schema:drop --force
+	docker exec -it php_app bin/console doctrine:schema:create
+	docker exec -it php_app bin/console app:search 'resources/input.ebnf' '2307/2018' '16:310' 'G58]1SB' 15
 
 test:
-	docker-compose exec -T app phpunit
+	docker exec -it app phpunit

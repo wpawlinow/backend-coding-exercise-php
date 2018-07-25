@@ -2,8 +2,8 @@ version: '2'
 
 services:
 
-  app:
-    container_name: cp_app
+  php_app:
+    container_name: php_app
     build:
       dockerfile: ./docker/app/Dockerfile
       context: .
