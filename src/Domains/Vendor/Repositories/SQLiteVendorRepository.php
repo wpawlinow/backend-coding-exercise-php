@@ -2,10 +2,12 @@
 
 namespace App\Domains\Vendor\Repositories;
 
+use App\Domains\MenuItem\Entities\MenuItem;
 use App\Domains\Vendor\Entities\Vendor;
 use App\Domains\Vendor\Interfaces\VendorRepositoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 
 class SQLiteVendorRepository implements VendorRepositoryInterface
 {
@@ -22,6 +24,10 @@ class SQLiteVendorRepository implements VendorRepositoryInterface
 
     public function store(Vendor $vendor): void
     {
+
+        foreach ($vendor->getMenuItems() as $menuItem) {
+            $this->em->persist($menuItem);
+        }
         $this->em->persist($vendor);
         $this->em->flush();
     }
@@ -34,10 +40,11 @@ class SQLiteVendorRepository implements VendorRepositoryInterface
          * it's the best, and fastest way to query data from database.
          */
 
-        /* $qb = $this->em->createNativeQuery(''); */
+        $qb = $this->em->createQuery(
+            'SELECT mi FROM '.MenuItem::class.' mi'
+        );
 
-        /* Hydrate results to array */
 
-        return [];
+        return $qb->getResult(Query::HYDRATE_OBJECT);
     }
 }

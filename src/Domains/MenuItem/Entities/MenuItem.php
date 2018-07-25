@@ -53,6 +53,11 @@ class MenuItem
         return $this->allergies;
     }
 
+    public function getAllergiesAsString(): string
+    {
+        return \count($this->allergies) ? implode(';', $this->allergies) : '';
+    }
+
 
     public function getNoticePeriod(): int
     {

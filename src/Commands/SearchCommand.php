@@ -6,6 +6,7 @@ use App\Domains\Data\Commands\ParseInputFileCommand;
 use App\Domains\Data\Commands\PostcodeValidateCommand;
 use App\Domains\Data\Entities\ConsoleInputData;
 use App\Domains\Vendor\Services\SearchVendorsService;
+use function array_values;
 use League\Tactician\CommandBus;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Throwable;
+use function var_dump;
 
 
 class SearchCommand extends Command
@@ -99,8 +101,11 @@ class SearchCommand extends Command
             $results = $this->searchVendorsService->search($consoleInputData);
 
             /* Simple result presentation */
-            foreach ($results as $result) {
-                sprintf('%s', $result);
+            foreach ($results as $menuItem) {
+                printf("%s;%s\n",
+                    $menuItem->getName(),
+                    $menuItem->getAllergiesAsString()
+                );
             }
 
         } catch (Throwable $ex) {
